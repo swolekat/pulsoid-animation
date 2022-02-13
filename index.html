@@ -68,12 +68,20 @@
         const pulseElement = document.getElementById(pulseElementId);
         let heartRate = 999;
         let isPulsing = false;
-        let hideTimeout = undefined;
-        let hideTimeoutDuration = 5000;
+        let lastMessage = new Date();
+        let hideDuration = 5000;
+
+        const hide = () => {
+            pulseElement.style.opacity = '0';
+            element.innerText = '';
+            isPulsing = false;
+        };
 
         const pulse = () => {
-            if(hideTimeout){
-                clearTimeout(hideTimeout);
+            const timeSinceLastMessage = Math.abs(lastMessage - new Date().getTime());
+            if(timeSinceLastMessage > hideDuration){
+                hide();
+                return;
             }
             isPulsing = true;
             pulseElement.style.transitionDuration = 0;
@@ -89,12 +97,11 @@
                     pulse();
                 }, msPerBeat);
             }, msPerBeat);
-            hideTimeout = setTimeout(() => {
-                pulseElement.style.opacity = '0';
-            }, hideTimeoutDuration);
+
         };
 
         socket.onmessage = (event) => {
+            lastMessage = new Date().getTime();
             heartRate = JSON.parse(event.data).data.heartRate;
             element.innerText = heartRate;
             if(!isPulsing){
