@@ -68,8 +68,13 @@
         const pulseElement = document.getElementById(pulseElementId);
         let heartRate = 999;
         let isPulsing = false;
+        let hideTimeout = undefined;
+        let hideTimeoutDuration = 5000;
 
         const pulse = () => {
+            if(hideTimeout){
+                clearTimeout(hideTimeout);
+            }
             isPulsing = true;
             pulseElement.style.transitionDuration = 0;
             pulseElement.style.transform = 'scale(0.6)';
@@ -84,6 +89,9 @@
                     pulse();
                 }, msPerBeat);
             }, msPerBeat);
+            hideTimeout = setTimeout(() => {
+                pulseElement.style.opacity = '0';
+            }, hideTimeoutDuration);
         };
 
         socket.onmessage = (event) => {
