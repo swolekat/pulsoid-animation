@@ -1,3 +1,5 @@
+console.log('hello world');
+
 const params = new URLSearchParams(window.location.search);
 
 const pulsoidId = params.get("pulsoid-id");
